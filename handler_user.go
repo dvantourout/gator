@@ -46,3 +46,7 @@ func registerHandler(s *state, cmd command) error {
 
 	return nil
 }
+
+func resetHandler(s *state, cmd command) error {
+	return s.db.Reset(context.Background())
+}

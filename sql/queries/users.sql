@@ -12,3 +12,6 @@ returning *;
 select id, created_at, updated_at, name
 from users
 where users.name = $1;
+
+-- name: Reset :exec
+delete from users;
