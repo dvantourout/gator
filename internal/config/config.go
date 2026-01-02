@@ -5,10 +5,10 @@ import (
 	"os"
 )
 
-const configFileName = ".config.json"
+const configFileName = ".gatorconfig.json"
 
 func getConfigFilePath() (string, error) {
-	workingDirectory, err := os.Getwd()
+	workingDirectory, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
