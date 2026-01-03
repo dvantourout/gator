@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func loginHandler(s *state, cmd command) error {
+func handlerLogin(s *state, cmd command) error {
 	if len(cmd.args) != 1 {
 		return fmt.Errorf("login command need to be called with 1 argument")
 	}
@@ -28,7 +28,7 @@ func loginHandler(s *state, cmd command) error {
 	return nil
 }
 
-func registerHandler(s *state, cmd command) error {
+func handlerRegister(s *state, cmd command) error {
 	if len(cmd.args) != 1 {
 		return fmt.Errorf("register command should be called with 1 arguments")
 	}
@@ -47,11 +47,11 @@ func registerHandler(s *state, cmd command) error {
 	return nil
 }
 
-func resetHandler(s *state, cmd command) error {
+func handlerReset(s *state, cmd command) error {
 	return s.db.Reset(context.Background())
 }
 
-func usersHandler(s *state, cmd command) error {
+func handlerListUsers(s *state, cmd command) error {
 	if len(cmd.args) > 0 {
 		return fmt.Errorf("too many arguments")
 	}

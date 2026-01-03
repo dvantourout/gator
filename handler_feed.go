@@ -6,21 +6,9 @@ import (
 	"time"
 
 	"github.com/dvantourout/gator/internal/database"
-	"github.com/dvantourout/gator/internal/rss"
 )
 
-func aggHandler(s *state, cmd command) error {
-	rss, err := rss.FetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
-	if err != nil {
-		return fmt.Errorf("cannot fetch rss: %w", err)
-	}
-
-	fmt.Println(rss)
-
-	return nil
-}
-
-func addfeed(s *state, cmd command) error {
+func handlerAddfeed(s *state, cmd command) error {
 	if len(cmd.args) != 2 {
 		return fmt.Errorf("add feed should be called with 2 arguments")
 	}
@@ -43,6 +31,20 @@ func addfeed(s *state, cmd command) error {
 	})
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func handlerListFeeds(s *state, cmd command) error {
+	feeds, err := s.db.GetFeeds(context.Background())
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Printing feeds:")
+	for _, feed := range feeds {
+		fmt.Printf("* Name: %s User: %s Url: %s\n", feed.Name, feed.UserName.String, feed.Url)
 	}
 
 	return nil
