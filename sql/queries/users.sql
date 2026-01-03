@@ -15,3 +15,7 @@ where users.name = $1;
 
 -- name: Reset :exec
 delete from users;
+
+-- name: GetUsers :many
+select id, created_at, updated_at, name
+from users;

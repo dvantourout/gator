@@ -50,3 +50,23 @@ func registerHandler(s *state, cmd command) error {
 func resetHandler(s *state, cmd command) error {
 	return s.db.Reset(context.Background())
 }
+
+func usersHandler(s *state, cmd command) error {
+	if len(cmd.args) > 0 {
+		return fmt.Errorf("too many arguments")
+	}
+	users, err := s.db.GetUsers(context.Background())
+	if err != nil {
+		return err
+	}
+
+	for _, user := range users {
+		fmt.Print("* " + user.Name)
+		if s.config.CurrentUserName == user.Name {
+			fmt.Print(" (current)")
+		}
+		fmt.Println()
+	}
+
+	return nil
+}
