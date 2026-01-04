@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/dvantourout/gator/internal/database"
 	"github.com/dvantourout/gator/internal/rss"
 )
 
@@ -35,7 +36,7 @@ func scrapeFeeds(s *state) error {
 		return err
 	}
 
-	feed, err := rss.FetchFeed(context.Background(), nextFeed.Url)
+	feedData, err := rss.FetchFeed(context.Background(), nextFeed.Url)
 	if err != nil {
 		return err
 	}
@@ -45,8 +46,28 @@ func scrapeFeeds(s *state) error {
 		return err
 	}
 
-	for _, item := range feed.Chanel.Items {
-		fmt.Println(item.Title)
+	for _, item := range feedData.Chanel.Items {
+		now := time.Now().UTC()
+
+		publishedAt, err := time.Parse(time.RFC1123Z, item.PubDate)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		_, err = s.db.CreatePost(context.Background(), database.CreatePostParams{
+			UpdatedAt:   now,
+			CreatedAt:   now,
+			Title:       item.Title,
+			Description: item.Description,
+			PublishedAt: publishedAt,
+			FeedID:      nextFeed.ID,
+			Url:         item.Link,
+		})
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 	}
 
 	return nil
