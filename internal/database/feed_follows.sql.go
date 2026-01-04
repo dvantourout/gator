@@ -82,7 +82,7 @@ func (q *Queries) DeleteFeedFollow(ctx context.Context, arg DeleteFeedFollowPara
 }
 
 const getFeedByUrl = `-- name: GetFeedByUrl :one
-select id, created_at, updated_at, name, url, user_id
+select id, created_at, updated_at, name, url, user_id, last_fetched_at
 from feeds
 where url = $1
 `
@@ -97,6 +97,7 @@ func (q *Queries) GetFeedByUrl(ctx context.Context, url string) (Feed, error) {
 		&i.Name,
 		&i.Url,
 		&i.UserID,
+		&i.LastFetchedAt,
 	)
 	return i, err
 }
