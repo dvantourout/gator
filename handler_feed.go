@@ -22,7 +22,7 @@ func handlerAddfeed(s *state, cmd command) error {
 	url := cmd.args[1]
 	now := time.Now().UTC()
 
-	_, err = s.db.CreateFeed(context.Background(), database.CreateFeedParams{
+	feed, err := s.db.CreateFeed(context.Background(), database.CreateFeedParams{
 		Name:      name,
 		Url:       url,
 		UserID:    user.ID,
@@ -31,6 +31,14 @@ func handlerAddfeed(s *state, cmd command) error {
 	})
 	if err != nil {
 		return err
+	}
+
+	_, err = s.db.CreateFeedFollow(context.Background(), database.CreateFeedFollowParams{
+		UserID: user.ID,
+		FeedID: feed.ID,
+	})
+	if err != nil {
+		return nil
 	}
 
 	return nil
@@ -44,7 +52,7 @@ func handlerListFeeds(s *state, cmd command) error {
 
 	fmt.Println("Printing feeds:")
 	for _, feed := range feeds {
-		fmt.Printf("* Name: %s User: %s Url: %s\n", feed.Name, feed.UserName.String, feed.Url)
+		fmt.Printf("* Name: %s User: %s Url: %s\n", feed.Name, feed.UserName, feed.Url)
 	}
 
 	return nil

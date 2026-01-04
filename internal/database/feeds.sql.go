@@ -7,7 +7,6 @@ package database
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -56,7 +55,7 @@ func (q *Queries) CreateFeed(ctx context.Context, arg CreateFeedParams) (Feed, e
 const getFeeds = `-- name: GetFeeds :many
 select feeds.id, feeds.created_at, feeds.updated_at, feeds.name, feeds.url, feeds.user_id, users.name as user_name
 from feeds
-left join users
+inner join users
 on feeds.user_id = users.id
 `
 
@@ -67,7 +66,7 @@ type GetFeedsRow struct {
 	Name      string
 	Url       string
 	UserID    uuid.UUID
-	UserName  sql.NullString
+	UserName  string
 }
 
 func (q *Queries) GetFeeds(ctx context.Context) ([]GetFeedsRow, error) {

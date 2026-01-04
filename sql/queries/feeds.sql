@@ -12,5 +12,5 @@ returning *;
 -- name: GetFeeds :many
 select feeds.*, users.name as user_name
 from feeds
-left join users
+inner join users
 on feeds.user_id = users.id;
